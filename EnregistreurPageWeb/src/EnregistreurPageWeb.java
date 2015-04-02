@@ -51,26 +51,37 @@ public class EnregistreurPageWeb
 
     static private void Enregistreur(String WebPage, String nom_sortie)
     {
-		try {
-		Socket s = new Socket(InetAddress.getByName(WebPage.substring(7)), port);
-		PrintWriter pw = new PrintWriter(s.getOutputStream());
-		pw.println("GET / HTTP/1.1");
-		pw.println("Host: " + WebPage.substring(7));
-		pw.println("");		
-		pw.flush();
-		
-		BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-		String result;
-		System.out.println("//////////////" + WebPage.substring(7)+"//////////////");
-		
-		while((result = br.readLine()) != null)
-			System.out.println(result);
-		br.close();
-		}
-		catch (IOException ioex)
+		try 
 		{
-			System.err.println(ioex.getMessage());
-			System.err.println("Erreur");
+			int numSubstring = 7;
+			if (WebPage.contains("https"))
+				numSubstring = 8;
+			Socket s = new Socket(InetAddress.getByName(WebPage.substring(numSubstring)), port);
+			PrintWriter pw = new PrintWriter(s.getOutputStream());
+			PrintWriter doc = 	new PrintWriter(
+								new BufferedWriter(
+								new FileWriter(nom_sortie) ) );
+								
+			pw.println("GET / HTTP/1.1");
+			pw.println("Host: " + WebPage.substring(numSubstring));
+			pw.println("");		
+			pw.flush();
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+			String result;
+			System.out.println("//////////////" + WebPage.substring(numSubstring) +"//////////////");
+		
+			while((result = br.readLine()) != null)
+			{
+				System.out.println(result);
+				doc.println(result);
+			}		
+			br.close();
+			doc.close();
+		}
+		catch (Exception ioex)
+		{
+			System.err.println("Impossible de de connecter a la page hote..");
 		}
     }
 }
