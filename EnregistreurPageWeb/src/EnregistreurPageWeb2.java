@@ -55,6 +55,7 @@ public class EnregistreurPageWeb2
 		///{
     URL url;
     InputStream is = null;
+    PrintWriter doc;
     BufferedReader br;
     String line;
       try 
@@ -62,7 +63,7 @@ public class EnregistreurPageWeb2
          url = new URL(WebPage);
          is = url.openStream();  // throws an IOException
          br = new BufferedReader(new InputStreamReader(is));
-         PrintWriter doc = 	new PrintWriter(
+         doc = 	new PrintWriter(
 			new BufferedWriter(
 			new FileWriter(nom_sortie) ) );
          
@@ -83,45 +84,10 @@ public class EnregistreurPageWeb2
       }
       finally 
       {
-        try 
-        {
-            if (is != null) is.close();
-        } catch (IOException ioe) 
-        {
-            // nothing to see here
-        }
+         br.close();
+			doc.close();
+         is.close();
       }
-			//Socket s = new Socket(InetAddress.getByName(WebPage.substring(numSubstring)), port);
-			////PrintWriter pw = new PrintWriter(s.getOutputStream());
-         
-         ////URLConnection conn = new URL(WebPage);
-         ////connection.setRequestProperty("Accept-Charset", "UTF-8");
-         ////InputStream response = connection.getInputStream();
-         
-			//PrintWriter doc = 	new PrintWriter(
-				//				new BufferedWriter(
-				//				new FileWriter(nom_sortie) ) );
-								
-			//pw.println("GET / HTTP/1.1");
-			//pw.println("Host: " + WebPage.substring(numSubstring));
-			//pw.println("");		
-			//pw.flush();
 			
-			///BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-			///String result;
-			///System.out.println("//////////////" + WebPage.substring(numSubstring) +"//////////////");
-		
-			///while((result = br.readLine()) != null)
-			///{
-			///	System.out.println(result);
-			///	doc.println(result);
-			///}		
-			///br.close();
-			///doc.close();
-		///}
-		///catch (Exception ioex)
-		///{
-		///	System.err.println("Impossible de de connecter a la page hote..");
-		///}
     }
 }
