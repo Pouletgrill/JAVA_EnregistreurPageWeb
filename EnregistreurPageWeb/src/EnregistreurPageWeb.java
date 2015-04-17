@@ -51,37 +51,53 @@ public class EnregistreurPageWeb
 
     static private void Enregistreur(String WebPage, String nom_sortie)
     {
-		try 
-		{
-			int numSubstring = 7;
-			if (WebPage.contains("https"))
-				numSubstring = 8;
-			Socket s = new Socket(InetAddress.getByName(WebPage.substring(numSubstring)), port);
-			PrintWriter pw = new PrintWriter(s.getOutputStream());
-			PrintWriter doc = 	new PrintWriter(
-								new BufferedWriter(
-								new FileWriter(nom_sortie) ) );
-								
-			pw.println("GET / HTTP/1.1");
-			pw.println("Host: " + WebPage.substring(numSubstring));
-			pw.println("");		
-			pw.flush();
+		///try 
+		///{
+    URL url;
+    InputStream is = null;
+    PrintWriter doc = null;
+    BufferedReader br= null;
+    String line = null;
+      try 
+      {
+         url = new URL(WebPage);
+         is = url.openStream();  // throws an IOException
+         br = new BufferedReader(new InputStreamReader(is));
+         doc = 	new PrintWriter(
+			new BufferedWriter(
+			new FileWriter(nom_sortie) ) );
+         
+         while ((line = br.readLine()) != null) 
+         {
+               System.out.print(".");
+               doc.println(line);
+         }
+         System.out.print("\nFini !");
+      } 
+      catch (MalformedURLException mue) 
+      {
+         mue.printStackTrace();
+      } 
+      catch (IOException ioe) 
+      {
+         ioe.printStackTrace();
+      }
+      finally 
+      {
+         try
+         {            
+            if (br != null)
+               br.close();
+            if (doc != null)
+               doc.close();
+            if (is != null)
+               is.close();
+         }
+         catch (IOException ioex)
+         {
+            ioex.printStackTrace();
+         }
+      }
 			
-			BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-			String result;
-			System.out.println("//////////////" + WebPage.substring(numSubstring) +"//////////////");
-		
-			while((result = br.readLine()) != null)
-			{
-				System.out.println(result);
-				doc.println(result);
-			}		
-			br.close();
-			doc.close();
-		}
-		catch (Exception ioex)
-		{
-			System.err.println("Impossible de de connecter a la page hote..");
-		}
     }
 }
